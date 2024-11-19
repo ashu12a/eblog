@@ -1,38 +1,68 @@
-.App {
-  text-align: center;
+/* Barlow font import   */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* Imperial Fornt import   */
+@import url('https://db.onlinewebfonts.com/c/41ef03052040400ec0acd500990fdc97?family=URW+Imperial+W01+Regular');
+
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Barlow", serif;
+  letter-spacing: 1px;
+}
+.font-imperial{
+  font-family:'URW Imperial W01 Regular'
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  word-break: break-word;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+input[type="checkbox"]{
+  accent-color: #9b59b6;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+.black-transparent-background{
+  background: rgb(0,0,0);
+background: linear-gradient(0deg, rgba(0,0,0,0.6419817927170868) 65%, rgba(255,255,255,0) 100%);
 }
 
-.App-link {
-  color: #61dafb;
+.hero-slider > .swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal{
+  left: 30vw!important;
+  bottom: 50px!important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hero-slider .swiper-pagination-bullets.swiper-pagination-horizontal .swiper-pagination-bullet{
+  width: 40px;
+  border-radius: 10px;
+  height: 4px;
+}
+.hero-slider > .swiper-pagination-bullets .swiper-pagination-bullet-active{
+  background-color: white;
+}
+
+.heading-white .heading-white-span {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 1.5px), rgb(255, 255, 255) 10px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.7s;
+}
+
+.heading-white:hover .heading-white-span {
+  background-size: 100% 100%;
+}
+
+.heading-black .heading-black-span {
+  width: calc(100%);
+  background-image: linear-gradient(transparent calc(100% - 1.5px), black 10px);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.7s;
+}
+
+.heading-black:hover .heading-black-span {
+  background-size: 100% 100%;
 }
