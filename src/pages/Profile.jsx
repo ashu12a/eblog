@@ -66,6 +66,9 @@ export default function Profile() {
             {
                 query === "myposts" && <MyPosts />
             }
+            {
+                query === "comments" && <MyPosts />
+            }
         </div>
       </div>
     </div>

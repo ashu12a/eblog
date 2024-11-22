@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { MdOutlineMail } from "react-icons/md";
 import { FaFacebook } from "react-icons/fa";
 import FooterBar from "../components/menu/FooterBar";
+import { NotifyWarning } from "../utils/Notify";
 
 export default function Signin() {
   return (
@@ -27,33 +28,37 @@ export default function Signin() {
             type="text"
             className="w-full border border-gray-400 rounded outline-none my-2 p-4 focus:border-primary transition duration-300 "
             placeholder="Your email"
+            value='example@mail.com'
           />
           <input
-            type="text"
+            type="password"
             className="w-full border border-gray-400 rounded outline-none my-2 p-4 focus:border-primary transition duration-300 "
             placeholder="Password"
+            value='**********'
           />
           <div className="my-2 flex justify-between">
             <div className="flex gap-2">
               <input type="checkbox" name="rememberme" className="w-4" />
               <p>Remember me</p>
             </div>
-            <Link to="/forgot-password" className="underline text-primary">
+            <button onClick={() => {NotifyWarning('Not available in demo')}} className="underline text-primary">
               Forgot Password
-            </Link>
+            </button>
           </div>
 
-          <button className="my-4 w-full py-3 bg-primary text-lg text-white rounded hover:bg-gray-900 transition duration-300">
+        <div className="flex text-center">
+          <Link to='/profile'  className="my-4 w-full py-3 bg-primary text-lg text-white rounded hover:bg-gray-900 transition duration-300">
             Login
-          </button>
+          </Link>
+        </div>
 
           <div className="text-gray-500 text-center text-xl my-2">OR</div>
 
-          <button className="flex justify-center items-center gap-4 rounded my-4 w-full py-3 text-lg border border-gray-600 text-gray-600 hover:text-white hover:bg-gray-900 transition duration-300">
+          <button onClick={() => {NotifyWarning('Not available in demo')}} className="flex justify-center items-center gap-4 rounded my-4 w-full py-3 text-lg border border-gray-600 text-gray-600 hover:text-white hover:bg-gray-900 transition duration-300">
             <MdOutlineMail /> Login With Email
           </button>
 
-          <button className="flex justify-center items-center gap-4 rounded my-4 w-full py-3 text-lg border border-gray-600 text-gray-600 hover:text-white hover:bg-gray-900 transition duration-300">
+          <button onClick={() => {NotifyWarning('Not available in demo')}} className="flex justify-center items-center gap-4 rounded my-4 w-full py-3 text-lg border border-gray-600 text-gray-600 hover:text-white hover:bg-gray-900 transition duration-300">
             <FaFacebook /> Login With Facebook
           </button>
 

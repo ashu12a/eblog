@@ -2,8 +2,10 @@ import React from "react";
 import Breadcrum from "../components/breadcrum";
 import { Link } from "react-router-dom";
 import FooterBar from "../components/menu/FooterBar";
+import { NotifyWarning } from "../utils/Notify";
 
 export default function Signup() {
+
   return (
     <div>
       <Breadcrum
@@ -52,7 +54,7 @@ export default function Signup() {
             </p>
           </div>
 
-          <button className="my-4 w-full py-3 bg-primary text-lg text-white rounded hover:bg-gray-900 transition duration-300">
+          <button onClick={() => {NotifyWarning('Not available in demo')}} className="my-4 w-full py-3 bg-primary text-lg text-white rounded hover:bg-gray-900 transition duration-300">
             Sign Up
           </button>
 
