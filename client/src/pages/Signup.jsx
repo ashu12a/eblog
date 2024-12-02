@@ -5,7 +5,7 @@ import FooterBar from "../components/menu/FooterBar";
 import { NotifyWarning } from "../utils/Notify";
 
 export default function Signup() {
-
+  
   return (
     <div>
       <Breadcrum
