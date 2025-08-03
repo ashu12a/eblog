@@ -3,17 +3,17 @@ import { Heading } from "./utils";
 import { FaRegClock } from "react-icons/fa";
 import { FaChartSimple } from "react-icons/fa6";
 
-export function Slide1({img, category, heading, author, read, views }) {
+export function Slide1({img, category, heading, author, read, views, slug }) {
   return (
     <div
       className="w-full h-[600px] relative bg-no-repeat bg-center bg-cover"
-      style={{ background: `url(${img})` }}
+      style={{ background: `url(${img})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}
     >
       <div className=" absolute bottom-16 lg:px-20 md:px-10 px-6 py-10">
         <p className="bg-gray-800 px-3 py-1 text-sm inline">{category}</p>
         <div className="mt-4 lg:text-5xl md:text-4xl text-2xl  max-w-[800px] text-white">
           <Heading
-            to=""
+            to={`/post-detail/${slug}`}
             white={true}
             text={heading}
           />

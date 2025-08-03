@@ -4,20 +4,26 @@ import axios from "axios";
 import { generateSlug } from "../../utils/Helper";
 import { NotifySuccess, NotifyWarning } from "../../utils/Notify";
 import { useAuth } from "../../context/AuthContext";
+import KeywordInput from "../../components/form/inputs/KeywordInput";
+import { useGlobalLoading } from "../../context/LoadingContext";
+
 
 export default function PostCategories() {
   const { token } = useAuth();
+  const { startLoading, stopLoading} = useGlobalLoading();
+
   const [slug, setSlug] = useState();
   const [title, setTitle] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [subCategories, setSubCategories] = useState([]);
   const [categories, setCategories] = useState();
   const [refresh, setRefresh] = useState(0);
   const [isUpdate, setIsUpdate] = useState(null);
 
-
   // ************** Fetch All Blog Categories *********************
   const fetchAllBlogCategories = async () => {
     try {
+      startLoading();
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/blog/category?page=${currentPage}`,
         {
@@ -26,7 +32,9 @@ export default function PostCategories() {
       );
       setCategories(response.data);
     } catch (e) {
-      NotifyWarning(e?.response?.data?.message || "Something went wrong");
+      NotifyWarning(e?.response?.data?.message || "Unable to fetch Cateogory");
+    } finally {
+      stopLoading();
     }
   };
 
@@ -42,12 +50,12 @@ export default function PostCategories() {
         isUpdate
           ? await axios.put(
               `${import.meta.env.VITE_API_URL}/blog/category/${isUpdate}`,
-              { title, slug },
+              { title, slug, subCategories },
               { headers: { Authorization: `Bearer ${token}` } }
             )
           : await axios.post(
               `${import.meta.env.VITE_API_URL}/blog/category`,
-              { title, slug },
+              { title, slug, subCategories },
               { headers: { Authorization: `Bearer ${token}` } }
             );
       }
@@ -59,6 +67,7 @@ export default function PostCategories() {
       setIsUpdate(null);
       setTitle("");
       setSlug("");
+      setSubCategories([]);
     } catch (e) {
       NotifyWarning(e?.response?.data?.message || "Something went wrong");
     }
@@ -85,6 +94,7 @@ export default function PostCategories() {
     setTitle(data.title);
     setSlug(data.slug);
     setIsUpdate(data._id);
+    setSubCategories(data.subCategories);
   };
 
   // ******************* Pagination *************************
@@ -141,6 +151,11 @@ export default function PostCategories() {
                 className="w-full border border-neutral-200 outline-none px-4 py-2 rounded text-blue-500 underline"
                 required
               />
+            </div>
+
+            <div className="my-2">
+              <label>Sub Categories</label>
+              <KeywordInput keywords={subCategories} setKeywords={setSubCategories} />
             </div>
 
             <div className="flex my-4">

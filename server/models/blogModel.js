@@ -11,11 +11,17 @@ const blogSchema = new mongoose.Schema(
     thumbnail: { type: String, required: true },
     excerpt: { type: String },
     content: { type: String, required: true },
-    category:  {
+    category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "BlogCategory",
       required: true,
     },
+    label: {
+      type: String,
+      enum: ["featured", "trending", "latest", "popular"],
+      default: "latest",
+    },
+    subcategory: { type: String },
     slug: { type: String, required: true, unique: true },
     status: { type: String, default: "draft", enum: ["draft", "publish"] },
   },

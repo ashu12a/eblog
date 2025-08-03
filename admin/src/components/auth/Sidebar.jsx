@@ -5,12 +5,16 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { menuData } from "../../json/data";
 import { useAuth } from "../../context/AuthContext";
 import { IoIosLogOut, IoMdLogOut } from "react-icons/io";
+import Logo from "../../assets/logo.svg";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaUserCog } from "react-icons/fa";
+import { useGlobalLoading } from "../../context/LoadingContext";
 
 export default function Sidebar() {
   const location = useLocation();
   const { logout } = useAuth();
+  const { isLoading } = useGlobalLoading();
+
   //   ************************** Auto Minimize Sidebar ********************************
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -65,11 +69,7 @@ export default function Sidebar() {
           isSidebarOpen && "w-[20%]"
         } w-[0px] overflow-hidden transition-all duration-300 bg-white border-r border-neutral-200`}
       >
-        <img
-          className="w-[100px] m-6"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfr2whwhXQOF0dgQvAhwNcymmZtYemtWRDuWpyDYOZot2rr40blnU5fm18HdgNrBvkzw&usqp=CAU"
-          alt="Logo."
-        />
+        <img className="w-[120px] m-6" src={Logo} alt="Logo." />
         <div>
           {menuData.map((menu, index) => (
             <div className="my-4" key={index}>
@@ -176,7 +176,10 @@ export default function Sidebar() {
                       Profile Settings
                     </div>
                   </Link>
-                  <div className="px-4 py-2 hover:bg-neutral-100 w-full flex gap-4 items-center cursor-pointer" onClick={logout}>
+                  <div
+                    className="px-4 py-2 hover:bg-neutral-100 w-full flex gap-4 items-center cursor-pointer"
+                    onClick={logout}
+                  >
                     <IoMdLogOut size={20} className="text-neutral-700" /> Logout
                   </div>
                 </div>
@@ -185,7 +188,12 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* ************content section*************  */}
+        {/* ✅ Show overlay loader, don't block app tree */}
+        {isLoading && (
+          <div className="fixed top-0 lg:left-64 left-0 right-0 bottom-0 bg-white flex justify-center items-center z-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-800"></div>
+          </div>
+        )}
         <Outlet />
       </div>
     </div>

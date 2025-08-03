@@ -8,8 +8,14 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreatePosts from "./components/form/blog/CreatePosts";
 import UpdatePosts from "./components/form/blog/updatePost";
 import PostCategories from "./pages/blog/PostCategories";
+import PostComments from "./pages/blog/PostComments";
+import SiteSetting from "./pages/other/SiteSetting";
+
+
 
 function App() {
+
+
   return (
     <BrowserRouter>
       <Routes>
@@ -23,6 +29,10 @@ function App() {
           <Route path="/posts/create" Component={CreatePosts} />
           <Route path="/posts/update/:id" Component={UpdatePosts} />
           <Route path="/post-categories" Component={PostCategories} />
+          <Route path="/post-comments" Component={PostComments} />
+
+          {/* Site Pages  */}
+          <Route path="/site-setting" Component={SiteSetting} />
         </Route>
 
         {/* Not Found Route  */}

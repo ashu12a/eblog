@@ -7,10 +7,13 @@ import { useAuth } from "../../../context/AuthContext";
 import { generateSlug } from "../../../utils/Helper";
 
 export default function CreatePosts() {
-  const editor = useRef(null);
-  const content = useRef("");
   const navigate = useNavigate();
   const { token, user } = useAuth();
+
+  const [subCategory, setSubCategory] = useState([]);
+
+  const editor = useRef(null);
+  const content = useRef("");
 
   // *************** Handle thumbnail **************
   const [thumbnail, setThumbnail] = useState(null);
@@ -42,7 +45,6 @@ export default function CreatePosts() {
     fetchAllBlogCategories();
   }, []);
 
-
   // ***************** Handle Form Submission **********************
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +58,8 @@ export default function CreatePosts() {
     formData.append("author", user._id);
     formData.append("excerpt", e.target.excerpt.value);
     formData.append("category", e.target.category.value);
+    formData.append("subcategory", e.target.subcategory.value);
+    formData.append("label", e.target.label.value);
     formData.append("status", e.target.status.value);
     formData.append("content", content.current);
 
@@ -68,18 +72,27 @@ export default function CreatePosts() {
     }
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/blog`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.post(`${import.meta.env.VITE_API_URL}/blog`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       NotifySuccess("Post created successfully");
       navigate("/posts");
     } catch (e) {
       NotifyWarning(e?.response?.data?.message || "Something went wrong");
     }
+  };
+
+  // ********* Refresh Catgeories *********
+  const RefreshCategories = () => {
+    fetchAllBlogCategories();
+    NotifySuccess("Categories refreshed successfully");
+  };
+
+  // ********* Handle Filter Subcategories ******
+  const handleFilterSubCategories = (value) => {
+    setSubCategory(
+      categories?.filter((p) => p._id === value)[0]?.subCategories
+    );
   };
 
   return (
@@ -142,21 +155,61 @@ export default function CreatePosts() {
           </div>
         </div>
         <div className="col-span-2 px-4">
-          <div className="my-2">
+          <div className="-mb-2">
             <label>Category</label>
             <select
               className="w-full border border-neutral-200 outline-none px-4 py-2 rounded"
               required
+              onChange={(e) => handleFilterSubCategories(e.target.value)}
               name="category"
+              multiple={false}
             >
               <option value=""> --select--</option>
-              {
-                categories?.map(category => (
-                  <option key={category._id} value={category._id}>
-                    {category.title}
-                  </option>
-                ))
-              }
+              {categories?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-right pt-1">
+              <span
+                className="text-green-600 cursor-pointer"
+                onClick={RefreshCategories}
+              >
+                Refresh
+              </span>
+            </p>
+          </div>
+          <div
+            className={`mb-4 ${subCategory?.length > 0 ? "block" : "hidden"}`}
+          >
+            <label>Sub Category</label>
+            <select
+              className="w-full border border-neutral-200 outline-none px-4 py-2 rounded"
+              required
+              name="subcategory"
+            >
+              <option value=""> --select--</option>
+              {subCategory?.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label>Label</label>
+            <select
+              className="w-full border border-neutral-200 outline-none px-4 py-2 rounded"
+              required
+              name="label"
+            >
+              <option value=""> --select--</option>
+              <option value="featured">Featured</option>
+              <option value="trending">Trending</option>
+              <option value="latest" selected>Latest</option>
+              <option value="popular">Popular</option>
             </select>
           </div>
 

@@ -1,6 +1,7 @@
 import { AiOutlineDashboard } from "react-icons/ai";
-import { FaUsers } from "react-icons/fa";
+import { FaRegCommentDots, FaUsers } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
+import { FiSettings } from "react-icons/fi";
 import { HiMiniPencilSquare } from "react-icons/hi2";
 import { TbCategory2 } from "react-icons/tb";
 
@@ -28,6 +29,11 @@ export const menuData = [
         icon: TbCategory2, // Replace with actual icon class or path
         path: "/post-categories",
       },
+      {
+        label: "Comments",
+        icon: FaRegCommentDots, // Replace with actual icon class or path
+        path: "/post-comments",
+      },
     ],
   },
   {
@@ -43,6 +49,17 @@ export const menuData = [
         icon: FaUserGroup, // Replace with actual icon class or path
         path: "/users",
       },
+    ],
+  },
+  {
+    title: "Settings",
+    items: [
+      {
+        label: "Site Settings",
+        icon: FiSettings, // Replace with actual icon class or path
+        path: "/site-setting",
+      },
+     
     ],
   },
 ];

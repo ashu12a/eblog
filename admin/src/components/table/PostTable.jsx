@@ -28,6 +28,8 @@ export default function PostTable({ blogs, onDelete, nextPage, previousPage }) {
               <th className="px-6 py-3">Id</th>
               <th className="px-6 py-3">Title</th>
               <th className="px-6 py-3">Category</th>
+              <th className="px-6 py-3">Sub Category</th>
+              <th className="px-6 py-3">Label</th>
               <th className="px-6 py-3">Date</th>
               <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3 text-center">Actions</th>
@@ -37,28 +39,34 @@ export default function PostTable({ blogs, onDelete, nextPage, previousPage }) {
           <tbody>
             {blogs?.data?.map((post, index) => (
               <tr className={`${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
-                <td className="px-6 py-2 text-gray-800"> {(blogs.pagination.page - 1) * blogs.pagination.limit + index + 1} </td>
-                <td className="px-6 py-2 text-gray-800">
+                <td className="px-2 py-2 text-gray-800"> {(blogs.pagination.page - 1) * blogs.pagination.limit + index + 1} </td>
+                <td className="px-2 py-2 text-gray-800">
                   {" "}
                   {post.title.slice(0, 75)}
                   {post.title.length > 75 && "..."}
                 </td>
-                <td className="px-6 py-2 text-gray-600">
+                <td className="px-2 py-2 text-gray-600">
                   {post?.category?.title}
                 </td>
-                <td className="px-6 py-2 text-gray-500">
-                  {new Date(post.createdAt).toLocaleString()}
+                <td className="px-2 py-2 text-gray-600">
+                  <span className="text-sm bg-gray-200 px-2 py-1 rounded">{post?.subcategory}</span>
                 </td>
-                <td className="px-6 py-2">
+                <td className="px-2 py-2 text-gray-600">
+                  <span className="text-sm capitalize bg-gray-200 px-2 py-1 rounded">{post?.label}</span>
+                </td>
+                <td className="px-2 py-2 text-gray-500">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-2 py-2">
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                    className={`px-4 py-1 rounded-full text-sm font-medium ${getStatusColor(
                       post.status
                     )}`}
                   >
                     {post.status}
                   </span>
                 </td>
-                <td className="px-6 py-2 text-center">
+                <td className="px-2 py-2 text-center">
                   <Link to={`/posts/update/${post._id}`}>
                     <button className="px-2 py-2 text-yellow-500 rounded hover:bg-neutral-200">
                       <BiSolidPencil />

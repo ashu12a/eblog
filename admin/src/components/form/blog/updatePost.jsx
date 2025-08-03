@@ -4,17 +4,47 @@ import axios from "axios";
 import { NotifySuccess, NotifyWarning } from "../../../utils/Notify";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { useGlobalLoading } from "../../../context/LoadingContext";
+
 
 export default function UpdatePosts() {
-  const editor = useRef(null);
-  const content = useRef("");
   const { id } = useParams();
   const navigate = useNavigate();
+  const { startLoading, stopLoading } = useGlobalLoading();
+  const [subCategory, setSubCategory] = useState([]);
+  const [isLoading, setIsloading] = useState(false);
+
+  const content = useRef("");
+  const editor = useRef(null);
+
+  // ************** Fetch All Blog Categories *********************
+  const [categories, setCategories] = useState([]);
+  const fetchAllBlogCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/blog/category`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setCategories(response.data.data);
+    } catch (e) {
+      NotifyWarning(e?.response?.data?.message || "Something went wrong");
+    }
+  };
+
+  useEffect(() => {
+    fetchAllBlogCategories();
+  }, []);
+
+  // updating blog state
   const [blogData, setBlogData] = useState({
     title: "",
     slug: "",
     excerpt: "",
     category: "",
+    subcategory: "",
+    label: "",
     content: "",
     status: "draft",
   });
@@ -48,6 +78,7 @@ export default function UpdatePosts() {
   // Fetch Existing Post
   const getExistingPost = async () => {
     try {
+      startLoading();
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/blog/one/${id}`,
         {
@@ -59,15 +90,20 @@ export default function UpdatePosts() {
         title: post?.title || "",
         slug: post?.slug || "",
         excerpt: post?.excerpt || "",
-        category: post?.category || "",
+        category: post?.category?._id || "",
+        subcategory: post?.subcategory || "",
+        label: post?.label || "",
         content: post?.content || "",
         status: post?.status || "draft",
       });
       content.current = post?.content || "";
       setThumbnail(post?.thumbnail);
+      setSubCategory(post?.category?.subCategories);
     } catch (error) {
       navigate("/posts");
       NotifyWarning(error?.response?.data?.message || "Blog Data Not Found");
+    } finally {
+      stopLoading();
     }
   };
 
@@ -78,16 +114,19 @@ export default function UpdatePosts() {
   // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsloading(true);
     const formData = new FormData();
     formData.append("title", blogData.title);
     formData.append("slug", blogData.slug);
     formData.append("author", user._id);
     formData.append("excerpt", blogData.excerpt);
     formData.append("category", blogData.category);
+    formData.append("subcategory", blogData.subcategory);
+    formData.append("label", blogData.label);
     formData.append("status", blogData.status);
     formData.append("content", content.current);
 
-    if (typeof thumbnail === 'object') {
+    if (typeof thumbnail === "object") {
       formData.append("thumbnail", thumbnail);
     }
 
@@ -99,7 +138,23 @@ export default function UpdatePosts() {
       navigate("/posts");
     } catch (error) {
       NotifyWarning(error?.response?.data?.message || "Something went wrong");
+    } finally{
+      setIsloading(false);
     }
+  };
+
+  // ********* Refresh Catgeories *********
+  const RefreshCategories = () => {
+    fetchAllBlogCategories();
+    NotifySuccess("Categories refreshed successfully");
+  };
+
+  // ********* Handle Filter Subcategories ******
+  const handleFilterSubCategories = (e) => {
+    handleInputChange(e);
+    setSubCategory(
+      categories?.filter((p) => p._id === e.target.value)[0]?.subCategories || ""
+    );
   };
 
   return (
@@ -159,35 +214,81 @@ export default function UpdatePosts() {
           </div>
         </div>
         <div className="col-span-2 px-4">
-          <div className="my-2">
+          <div className="-mb-2">
             <label>Category</label>
             <select
-              name="category"
               className="w-full border border-neutral-200 outline-none px-4 py-2 rounded"
-              value={blogData.category}
-              onChange={handleInputChange}
               required
+              onChange={handleFilterSubCategories}
+              value={blogData.category}
+              name="category"
+              multiple={false}
             >
-              <option value="">--select--</option>
-              <option value="Trending">Trending</option>
-              <option value="News">News</option>
+              <option value=""> --select--</option>
+              {categories?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-right pt-1">
+              <span
+                className="text-green-600 cursor-pointer"
+                onClick={RefreshCategories}
+              >
+                Refresh
+              </span>
+            </p>
+          </div>
+
+          <div
+            className={`mb-4 ${subCategory?.length > 0 ? "block" : "hidden"}`}
+          >
+            <label>Sub Category</label>
+            <select
+              className="w-full border border-neutral-200 outline-none px-4 py-2 rounded"
+              name="subcategory"
+              value={blogData.subcategory || ""}
+              onChange={handleInputChange}
+            >
+              <option value=""> --select--</option>
+              {subCategory?.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="my-2">
+            <label>Label</label>
+            <select
+              className="w-full border border-neutral-200 outline-none px-4 py-2 rounded"
+              required
+              name="label"
+              value={blogData.label}
+              onChange={handleInputChange}
+            >
+              <option value=""> --select--</option>
+              <option value="featured">Featured</option>
+              <option value="trending">Trending</option>
+              <option value="latest">Latest</option>
+              <option value="popular">Popular</option>
             </select>
           </div>
           <div className="my-2">
             <label>Thumbnail</label>
-            <div className="relative overflow-hidden"> {console.log(thumbnail)}
+            <div className="relative overflow-hidden">
               <img
                 src={
                   typeof thumbnail === "string"
                     ? `${import.meta.env.VITE_STATIC_URL}/public/${thumbnail}` // When thumbnail is a string, it's assumed to be a path
-                    : (thumbnail && thumbnail !== null)
+                    : thumbnail && thumbnail !== null
                     ? URL.createObjectURL(thumbnail) // When thumbnail is a file, create a URL for the file object
                     : "https://dummyimage.com/500x300/f5f5f5" // Fallback image if thumbnail is null or undefined
                 }
                 alt="thumbnail"
                 className="border border-gray-200 rounded w-full h-[250px]"
               />
-
               <input
                 type="file"
                 onChange={handleThumbnailChange}
@@ -212,9 +313,13 @@ export default function UpdatePosts() {
           <div className="flex my-4">
             <button
               type="submit"
+              disabled={isLoading}
               className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded w-full"
             >
-              Submit
+            {
+              isLoading ? 'Loading...' : 'Submit'
+            }
+              
             </button>
           </div>
         </div>
